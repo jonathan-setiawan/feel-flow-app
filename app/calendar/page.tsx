@@ -126,10 +126,16 @@ export default function CalendarPage() {
 
   const getEntryForDate = (date: Date | null) => {
     if (!date) return null
-    const dateString = date.toISOString().split("T")[0]
-    return entries.find((entry) => entry.date === dateString)
+    const localDate = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+return entries.find((entry) => {
+  const entryDate = new Date(entry.date)
+  return (
+    entryDate.getFullYear() === localDate.getFullYear() &&
+    entryDate.getMonth() === localDate.getMonth() &&
+    entryDate.getDate() === localDate.getDate()
+  )
+})
   }
-
   const getPrimaryMoodForEntry = (entry: MoodEntry) => {
     if (!entry.moods || entry.moods.length === 0) {
       return MOODS.find((m) => m.value === 3) // Default to neutral
