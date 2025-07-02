@@ -172,8 +172,8 @@ export default function HistoryPage() {
   return (
     <div className="container mx-auto px-4 py-6 max-w-4xl">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Enhanced Mood History</h1>
-        <p className="text-gray-600">Review and manage your comprehensive mood entries with AI insights</p>
+        <h1 className="text-lg font-medium text-foreground">Enhanced Mood History</h1>
+        <p className="text-sm text-muted-foreground">Review and manage your comprehensive mood entries with AI insights</p>
       </div>
 
       {/* Enhanced Filters and Search */}
@@ -218,9 +218,9 @@ export default function HistoryPage() {
       {filteredEntries.length === 0 ? (
         <Card className="text-center py-12">
           <CardContent>
-            <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No entries found</h3>
-            <p className="text-gray-600">
+            <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-muted-foreground mb-2">No entries found</h3>
+            <p className="text-muted-foreground">
               {searchTerm || filterPeriod !== "all"
                 ? "Try adjusting your search or filter criteria"
                 : "Start by adding your first comprehensive mood entry with AI analysis"}
