@@ -90,18 +90,20 @@ export default function HistoryPage() {
     filtered = filtered.filter(
       (entry) => new Date(entry.date).toDateString() === today.toDateString()
     );
-  } else if (filterPeriod === "week") {
-    const dayOfWeek = today.getDay(); // Sunday = 0, Monday = 1
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1)); // Monday
+ } else if (filterPeriod === "week") {
+  const currentDate = new Date();
+  const dayOfWeek = currentDate.getDay(); // Sunday = 0, Monday = 1, ..., Saturday = 6
 
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6); // Sunday
+  const startOfWeek = new Date(currentDate);
+  startOfWeek.setDate(currentDate.getDate() - dayOfWeek); // Sunday
 
-    filtered = filtered.filter((entry) => {
-      const entryDate = new Date(entry.date);
-      return entryDate >= startOfWeek && entryDate <= endOfWeek;
-    });
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6); // Saturday
+
+  filtered = filtered.filter((entry) => {
+    const entryDate = new Date(entry.date);
+    return entryDate >= startOfWeek && entryDate <= endOfWeek;
+  });
   } else if (filterPeriod === "month") {
     const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
