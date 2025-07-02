@@ -71,18 +71,16 @@ export default function HistoryPage() {
   useEffect(() => {
   let filtered = [...entries];
 
-  // Apply search filter
+  // Search filter
   if (searchTerm) {
-    filtered = filtered.filter(
-      (entry) =>
-        entry.reflection.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        entry.moods?.some((mood) => mood.label.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        entry.triggers?.some((trigger) => trigger.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        entry.imageAnalysis?.insights?.some((insight) => insight.toLowerCase().includes(searchTerm.toLowerCase()))
+    filtered = filtered.filter((entry) =>
+      entry.reflection.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      entry.moods?.some((mood) => mood.label.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      entry.triggers?.some((trigger) => trigger.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      entry.imageAnalysis?.insights?.some((insight) => insight.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   }
 
-  // Apply date period filter
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
@@ -90,23 +88,27 @@ export default function HistoryPage() {
     filtered = filtered.filter(
       (entry) => new Date(entry.date).toDateString() === today.toDateString()
     );
- } else if (filterPeriod === "week") {
-  const currentDate = new Date();
-  const dayOfWeek = currentDate.getDay(); // Sunday = 0, Monday = 1, ..., Saturday = 6
+  } else if (filterPeriod === "week") {
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay()); // Minggu
 
-  const startOfWeek = new Date(currentDate);
-  startOfWeek.setDate(currentDate.getDate() - dayOfWeek); // Sunday
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6); // Sabtu
 
-  const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(startOfWeek.getDate() + 6); // Saturday
+    // Normalisasi jam jadi 00:00:00
+    startOfWeek.setHours(0, 0, 0, 0);
+    endOfWeek.setHours(23, 59, 59, 999);
 
-  filtered = filtered.filter((entry) => {
-    const entryDate = new Date(entry.date);
-    return entryDate >= startOfWeek && entryDate <= endOfWeek;
-  });
+    filtered = filtered.filter((entry) => {
+      const entryDate = new Date(entry.date);
+      return entryDate >= startOfWeek && entryDate <= endOfWeek;
+    });
   } else if (filterPeriod === "month") {
     const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+    startOfMonth.setHours(0, 0, 0, 0);
+    endOfMonth.setHours(23, 59, 59, 999);
 
     filtered = filtered.filter((entry) => {
       const entryDate = new Date(entry.date);
@@ -114,7 +116,7 @@ export default function HistoryPage() {
     });
   }
 
-  // Apply sort
+  // Sort
   filtered.sort((a, b) => {
     const dateA = new Date(a.date).getTime();
     const dateB = new Date(b.date).getTime();
@@ -123,6 +125,7 @@ export default function HistoryPage() {
 
   setFilteredEntries(filtered);
 }, [entries, searchTerm, filterPeriod, sortOrder]);
+
 
 
   const deleteEntry = (id: string) => {
