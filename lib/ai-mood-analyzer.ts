@@ -1,9 +1,5 @@
 // AI-powered mood analysis for uploaded images
-// This simulates advanced AI analysis - in production, you'd integrate with services like:
-// - Google Vision AI
-// - Azure Computer Vision
-// - AWS Rekognition
-// - OpenAI Vision API
+
 
 interface ImageAnalysis {
   suggestedMoods: string[]
@@ -51,8 +47,7 @@ const SCENE_MOOD_MAP: { [key: string]: string[] } = {
 
 // Simulate color extraction from image
 function extractDominantColors(imageDataUrl: string): string[] {
-  // In a real implementation, you'd use canvas to analyze pixel data
-  // For demo purposes, we'll return some common colors
+  
   const commonColors = [
     "#FF6B6B",
     "#4ECDC4",
@@ -73,8 +68,7 @@ function extractDominantColors(imageDataUrl: string): string[] {
 
 // Simulate object/scene detection
 function detectSceneElements(imageDataUrl: string): string[] {
-  // In production, this would use computer vision APIs
-  // For demo, we'll simulate based on common photo types
+  
   const possibleScenes = [
     "nature",
     "sunset",
@@ -97,7 +91,7 @@ function detectSceneElements(imageDataUrl: string): string[] {
 
 // Simulate facial emotion detection
 function detectEmotions(imageDataUrl: string): string[] {
-  // In production, this would use facial recognition APIs
+  
   const emotions = ["happy", "sad", "neutral", "surprised", "peaceful", "excited"]
   const hash = imageDataUrl.length % emotions.length
   return [emotions[hash]]
@@ -211,8 +205,7 @@ export function analyzeImageComposition(imageDataUrl: string): {
   saturation: number
   moodScore: number
 } {
-  // In production, this would analyze actual image data
-  // For demo, return simulated values
+  
   const hash = imageDataUrl.length
 
   return {
