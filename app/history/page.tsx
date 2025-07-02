@@ -71,32 +71,31 @@ export default function HistoryPage() {
   useEffect(() => {
     let filtered = [...entries]
 
-    // Apply search filter
     if (searchTerm) {
-      filtered = filtered.filter(
-        (entry) =>
-          entry.reflection.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          entry.moods?.some((mood) => mood.label.toLowerCase().includes(searchTerm.toLowerCase())) ||
-          entry.triggers?.some((trigger) => trigger.toLowerCase().includes(searchTerm.toLowerCase())) ||
-          entry.imageAnalysis?.insights?.some((insight) => insight.toLowerCase().includes(searchTerm.toLowerCase())),
+      filtered = filtered.filter((entry) =>
+        entry.reflection.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        entry.moods?.some((mood) => mood.label.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        entry.triggers?.some((trigger) => trigger.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        entry.imageAnalysis?.insights?.some((insight) => insight.toLowerCase().includes(searchTerm.toLowerCase()))
       )
     }
 
-    // Apply period filter
     const now = new Date()
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
     const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
     const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000)
 
     if (filterPeriod === "today") {
-      filtered = filtered.filter((entry) => entry.date === today.toISOString().split("T")[0])
+      filtered = filtered.filter((entry) => {
+        const entryDate = new Date(entry.date).toLocaleDateString()
+        return entryDate === today.toLocaleDateString()
+      })
     } else if (filterPeriod === "week") {
       filtered = filtered.filter((entry) => new Date(entry.date) >= weekAgo)
     } else if (filterPeriod === "month") {
       filtered = filtered.filter((entry) => new Date(entry.date) >= monthAgo)
     }
 
-    // Apply sort
     filtered.sort((a, b) => {
       const dateA = new Date(a.date).getTime()
       const dateB = new Date(b.date).getTime()
@@ -110,10 +109,7 @@ export default function HistoryPage() {
     const updatedEntries = entries.filter((entry) => entry.id !== id)
     setEntries(updatedEntries)
     localStorage.setItem("moodEntries", JSON.stringify(updatedEntries))
-    toast({
-      title: "Entry deleted",
-      description: "Your mood entry has been removed.",
-    })
+    toast({ title: "Entry deleted", description: "Your mood entry has been removed." })
   }
 
   const updateEntry = () => {
@@ -121,34 +117,21 @@ export default function HistoryPage() {
 
     const updatedEntries = entries.map((entry) =>
       entry.id === editingEntry.id
-        ? {
-            ...entry,
-            reflection: editReflection,
-            intensity: editIntensity[0],
-            energy: editEnergy[0],
-          }
-        : entry,
+        ? { ...entry, reflection: editReflection, intensity: editIntensity[0], energy: editEnergy[0] }
+        : entry
     )
 
     setEntries(updatedEntries)
     localStorage.setItem("moodEntries", JSON.stringify(updatedEntries))
     setEditingEntry(null)
     setEditReflection("")
-
-    toast({
-      title: "Entry updated",
-      description: "Your mood entry has been saved.",
-    })
+    toast({ title: "Entry updated", description: "Your mood entry has been saved." })
   }
 
   const playAudio = (audioUrl: string) => {
     const audio = new Audio(audioUrl)
     audio.play().catch(() => {
-      toast({
-        title: "Audio playback failed",
-        description: "Unable to play the voice note",
-        variant: "destructive",
-      })
+      toast({ title: "Audio playback failed", description: "Unable to play the voice note", variant: "destructive" })
     })
   }
 
@@ -157,17 +140,10 @@ export default function HistoryPage() {
     const today = new Date()
     const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000)
 
-    if (date.toDateString() === today.toDateString()) {
-      return "Today"
-    } else if (date.toDateString() === yesterday.toDateString()) {
-      return "Yesterday"
-    } else {
-      return date.toLocaleDateString("en-US", {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
-      })
-    }
+    if (date.toDateString() === today.toDateString()) return "Today"
+    if (date.toDateString() === yesterday.toDateString()) return "Yesterday"
+
+    return date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })
   }
 
   return (
