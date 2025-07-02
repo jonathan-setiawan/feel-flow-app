@@ -69,41 +69,59 @@ export default function HistoryPage() {
   }, [])
 
   useEffect(() => {
-    let filtered = [...entries]
+  let filtered = [...entries];
 
-    if (searchTerm) {
-      filtered = filtered.filter((entry) =>
+  // Apply search filter
+  if (searchTerm) {
+    filtered = filtered.filter(
+      (entry) =>
         entry.reflection.toLowerCase().includes(searchTerm.toLowerCase()) ||
         entry.moods?.some((mood) => mood.label.toLowerCase().includes(searchTerm.toLowerCase())) ||
         entry.triggers?.some((trigger) => trigger.toLowerCase().includes(searchTerm.toLowerCase())) ||
         entry.imageAnalysis?.insights?.some((insight) => insight.toLowerCase().includes(searchTerm.toLowerCase()))
-      )
-    }
+    );
+  }
 
-    const now = new Date()
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-    const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
-    const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000)
+  // Apply date period filter
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-    if (filterPeriod === "today") {
-      filtered = filtered.filter((entry) => {
-        const entryDate = new Date(entry.date).toLocaleDateString()
-        return entryDate === today.toLocaleDateString()
-      })
-    } else if (filterPeriod === "week") {
-      filtered = filtered.filter((entry) => new Date(entry.date) >= weekAgo)
-    } else if (filterPeriod === "month") {
-      filtered = filtered.filter((entry) => new Date(entry.date) >= monthAgo)
-    }
+  if (filterPeriod === "today") {
+    filtered = filtered.filter(
+      (entry) => new Date(entry.date).toDateString() === today.toDateString()
+    );
+  } else if (filterPeriod === "week") {
+    const dayOfWeek = today.getDay(); // Sunday = 0, Monday = 1
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1)); // Monday
 
-    filtered.sort((a, b) => {
-      const dateA = new Date(a.date).getTime()
-      const dateB = new Date(b.date).getTime()
-      return sortOrder === "desc" ? dateB - dateA : dateA - dateB
-    })
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6); // Sunday
 
-    setFilteredEntries(filtered)
-  }, [entries, searchTerm, filterPeriod, sortOrder])
+    filtered = filtered.filter((entry) => {
+      const entryDate = new Date(entry.date);
+      return entryDate >= startOfWeek && entryDate <= endOfWeek;
+    });
+  } else if (filterPeriod === "month") {
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+    filtered = filtered.filter((entry) => {
+      const entryDate = new Date(entry.date);
+      return entryDate >= startOfMonth && entryDate <= endOfMonth;
+    });
+  }
+
+  // Apply sort
+  filtered.sort((a, b) => {
+    const dateA = new Date(a.date).getTime();
+    const dateB = new Date(b.date).getTime();
+    return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
+  });
+
+  setFilteredEntries(filtered);
+}, [entries, searchTerm, filterPeriod, sortOrder]);
+
 
   const deleteEntry = (id: string) => {
     const updatedEntries = entries.filter((entry) => entry.id !== id)
