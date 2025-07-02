@@ -16,7 +16,7 @@ import { toast } from "@/hooks/use-toast"
 const MOODS = [
   { emoji: "😄", label: "Very Happy", value: 5, color: "bg-green-100 text-green-800" },
   { emoji: "🙂", label: "Happy", value: 4, color: "bg-blue-100 text-blue-800" },
-  { emoji: "😐", label: "Neutral", value: 3, color: "bg-gray-100 text-gray-800" },
+  { emoji: "😐", label: "Neutral", value: 3, color: "bg-muted text-gray-800" },
   { emoji: "😔", label: "Sad", value: 2, color: "bg-orange-100 text-orange-800" },
   { emoji: "😢", label: "Very Sad", value: 1, color: "bg-red-100 text-red-800" },
   { emoji: "😰", label: "Anxious", value: 2, color: "bg-yellow-100 text-yellow-800" },
@@ -181,7 +181,7 @@ export default function HistoryPage() {
         <CardContent className="pt-6">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search reflections, moods, triggers, or AI insights..."
                 value={searchTerm}
@@ -253,7 +253,7 @@ export default function HistoryPage() {
                         </span>
                       ))}
                       {entry.moods?.length > 3 && (
-                        <span className="text-sm text-gray-600 ml-1">+{entry.moods.length - 3}</span>
+                        <span className="text-sm text-muted-foreground ml-1">+{entry.moods.length - 3}</span>
                       )}
                     </div>
                   </div>
@@ -261,7 +261,7 @@ export default function HistoryPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-3">
-                        <h3 className="font-medium text-gray-900">{formatDate(entry.date)}</h3>
+                        <h3 className="font-medium text-foreground">{formatDate(entry.date)}</h3>
                         <div className="flex gap-2">
                           <Badge variant="outline" className="text-xs">
                             <Target className="h-3 w-3 mr-1" />
@@ -325,7 +325,7 @@ export default function HistoryPage() {
                                 </div>
                                 <div>
                                   <p className="font-medium">{editingEntry?.date}</p>
-                                  <p className="text-sm text-gray-600">
+                                  <p className="text-sm text-muted-foreground">
                                     {editingEntry?.moods?.map((m) => m.label).join(", ")}
                                   </p>
                                 </div>
@@ -376,8 +376,8 @@ export default function HistoryPage() {
                       </div>
                     </div>
 
-                    <p className="text-gray-700 leading-relaxed mb-3">
-                      {entry.reflection || <span className="text-gray-400 italic">No reflection added</span>}
+                    <p className="text-foreground leading-relaxed mb-3">
+                      {entry.reflection || <span className="text-muted-foreground italic">No reflection added</span>}
                     </p>
 
                     {/* AI Insights */}
@@ -440,7 +440,7 @@ export default function HistoryPage() {
           </DialogHeader>
           {viewingImage && (
             <div className="space-y-4">
-              <div className="relative rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
+              <div className="relative rounded-lg overflow-hidden bg-muted dark:bg-gray-800">
                 <img
                   src={viewingImage.image || "/placeholder.svg"}
                   alt="Mood entry"
@@ -462,7 +462,7 @@ export default function HistoryPage() {
 
                     {viewingImage.imageAnalysis.suggestedMoods.length > 0 && (
                       <div className="space-y-2 mb-4">
-                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Detected Moods:</p>
+                        <p className="text-sm font-medium text-foreground dark:text-gray-300">Detected Moods:</p>
                         <div className="flex flex-wrap gap-1">
                           {viewingImage.imageAnalysis.suggestedMoods.map((mood: string, index: number) => (
                             <Badge key={index} variant="outline" className="text-xs bg-white/80 dark:bg-gray-800/80">
@@ -475,12 +475,12 @@ export default function HistoryPage() {
 
                     {viewingImage.imageAnalysis.insights.length > 0 && (
                       <div className="space-y-2 mb-4">
-                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">AI Insights:</p>
+                        <p className="text-sm font-medium text-foreground dark:text-gray-300">AI Insights:</p>
                         <div className="space-y-1">
                           {viewingImage.imageAnalysis.insights.map((insight: string, index: number) => (
                             <p
                               key={index}
-                              className="text-xs text-gray-600 dark:text-gray-400 bg-white/50 dark:bg-gray-800/50 rounded px-2 py-1"
+                              className="text-xs text-muted-foreground dark:text-muted-foreground bg-white/50 dark:bg-gray-800/50 rounded px-2 py-1"
                             >
                               • {insight}
                             </p>
@@ -491,7 +491,7 @@ export default function HistoryPage() {
 
                     {viewingImage.imageAnalysis.colors.length > 0 && (
                       <div className="space-y-2">
-                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Dominant Colors:</p>
+                        <p className="text-sm font-medium text-foreground dark:text-gray-300">Dominant Colors:</p>
                         <div className="flex gap-1">
                           {viewingImage.imageAnalysis.colors.slice(0, 5).map((color: string, index: number) => (
                             <div
